@@ -1,0 +1,56 @@
+Utkarsh Dalal (cs61b-jf)
+Luis De Pombo (cs61b-qj)
+PART I)
+WUGraph.java:
+WUGraph.java essentially uses three different variables to implement a weighted, undirected graph - namely:
+1) A DList vertexList which uses the DList data structure from hw5 and stores the vertices in a doubly-linked list.
+2) A HashTableChained vertexTable, which uses the HashTableChained data structure from hw6 and stores each vertex in its own bucket.
+3) A HashTableChained edgeTable which stores each edge in the graph.
+
+We added three DListNode variables to the class Entry - e1, e2 and listVertex.
+
+Neighbors of a vertex are stored using the nodes of a DList which is stored as that vertex's 'value' in vertexTable as the node's
+item's (which is an Entry object) key's (VertexPair object) object1 or object2, where one is the vertex itself and the other is
+the other vertex in the edge.
+When we insert an edge, it is first converted to a VertexPair object, and then added to an entry. This edge is stored in its own
+unique bucket in edgeTable. After this, the edge is inserted into the aforementioned DList of both vertices (as long as it is not a 
+self-edge). The edge's e1 and e2 are assigned the to the DListNode object in the vertices in vertexTable so that they may be easily
+accessed.
+This allows removeEdge() to run in O(1) time, since we can find the edge in edgeTable, and automatically delete the edges in the
+DLists by directly manipulating e1 and e2.
+
+When a vertex is added to the graph, it is stored both in vertexList and vertexTable. The vertexTable representation's entry object
+also stores a reference to the node representing the same vertex in vertexList as its listVertex variable.
+This ensures that when a vertex is removed using removeVertex(), it can be done in O(d) time, since the vertex can easily be found
+in vertexTable, and the entry in vertexTable and its complementary entry in vertexList (stored as listVertex) can be removed - 
+however, one has to traverse the DList stored as the value of the vertexTable representation and remove each edge one by one by 
+using the e1 and e2 references.
+
+Since the vertices are stored in list form as vertexList, it is easy to return an array containing all the vertices by simply
+traversing the list and adding each node's item to the array. In this way, getVertices() can run in O(|V|) time.
+The number of vertices and edges are each stored in separate int variables which are incremented whenever an edge/vertex is added
+to the graph and decremented when one is removed. vertexCount() and edgeCount() simply return these values.
+
+addVertex() adds a vertex first to the list and then to the hashtable, storing the listnode representation for future use.
+degree() simply returns the length of the DList that stores the edges of a particular vertex in vertexTable.
+
+PART II)
+
+minSpanTree() returns a WUGraph that represents the minimum spanning tree
+of the WUGraph g determined by using Kruskal's algorithm.  The original WUGraph g is NOT changed.
+
+Copies all vertices in g to the empty WUGraph that is going to be returned
+and calls neighbors on each one immediately after. Stores all edges, including
+duplicate edges, in a queue. O(2V) => O(|V|).
+Sorts the queue with all possible edges based on their weights
+from smallest to greatest using quicksort. O(|E| log |E|).
+
+Start at beginning of the queue adding the edges into the WUGraph 
+that is going to be returned if: 1) the edge doesn't exist in this graph and 2)
+the two vertices that make up the edge are not part of the same set. 
+For every edge you added join the two vertices that make up the edge into a set 
+and continue until there is only one set left.   
+Running Time: O(|V| + |E| log |E|)
+
+
+
